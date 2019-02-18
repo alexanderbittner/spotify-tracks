@@ -1,33 +1,60 @@
 import requests
 import json
 from authenticate import get_token
+import time, datetime
+import os
 
 url = 'https://api.spotify.com/v1/me/player'
 
 #get a token
 token = get_token()
+print("getting token...")
 
-header = {'Authorization': 'Bearer ' + token}
-resp = requests.get(url=url, headers=header)
-data = json.loads(resp.text)
+FIRST_ROW = ''
+SECOND_ROW = ''
+THIRD_ROW = ''
+FOURTH_ROW = ''
 
-device_name = (data['device'])['name']
+def get_rows():
+    rows = []
+    rows.append(FIRST_ROW)
+    rows.append(SECOND_ROW)
+    rows.append(THIRD_ROW)
+    rows.append(FOURTH_ROW)
+    return rows
 
-song_length = (data['item'])['duration_ms']
-song_progress = data['progress_ms']
-song_percentage = int((song_progress / song_length) * 24)
+def refresh():
+    os.system('python refresh-token.py')
+    return('success')
 
-song_artist = data['item']['artists'][0]['name']
-song_name = (data['item'])['name']
+def main():
+    header = {'Authorization': 'Bearer ' + token}
+    resp = requests.get(url=url, headers=header)
+    data = json.loads(resp.text)
 
-progress_24 = '#'*song_percentage + ('-'*(24-song_percentage))
+    device_name = (data['device'])['name']
 
-first_row = (device_name[:24] + '\\') if len(device_name) > 24 else device_name
-second_row = (song_artist[:24] + '..') if len(song_artist) > 24 else song_artist
-third_row = (song_name[:24] + '\\') if len(song_name) > 24 else song_name
-fourth_row = (progress_24[:24] + '\\') if len(progress_24) > 24 else progress_24
+    song_length = int((data['item'])['duration_ms']/1000)
+    song_progress = int(data['progress_ms']/1000)
+    song_percentage = int((song_progress / song_length) * 100)
 
-print(first_row)
-print(second_row)
-print(third_row)
-print(fourth_row)
+    song_artist = data['item']['artists'][0]['name']
+    song_name = (data['item'])['name']
+
+    progress_24 = '#'*song_percentage + ('-'*(24-song_percentage))
+    
+    print('Playing on: ' + device_name)
+    print(song_artist)
+    print(song_name)
+    print(str(datetime.timedelta(seconds=song_progress)) + '/' + str(datetime.timedelta(seconds=song_length)))
+    print()
+    time.sleep(1)
+
+
+while True:
+    try:
+        main()
+        time.sleep(0.1)
+    except KeyboardInterrupt:
+        print("bye")
+        raise SystemExit
