@@ -25,7 +25,7 @@ SPOTIFY_API_URL = "{}/{}".format(SPOTIFY_API_BASE_URL, API_VERSION)
 CLIENT_SIDE_URL = "http://127.0.0.1"
 PORT = 876
 REDIRECT_URI = "{}:{}/callback/q".format(CLIENT_SIDE_URL, PORT)
-SCOPE = "user-read-playback-state"
+SCOPE = "user-read-playback-state user-modify-playback-state"
 STATE = ""
 SHOW_DIALOG_bool = True
 SHOW_DIALOG_str = str(SHOW_DIALOG_bool).lower()
@@ -55,7 +55,6 @@ def index():
 def callback():
     # Auth Step 4: Requests refresh and access tokens
     auth_token = request.args['code']
-    print("----------------------------------------------------------------------------------------------")
     code_payload = {
         "grant_type": "authorization_code",
         "code": str(auth_token),

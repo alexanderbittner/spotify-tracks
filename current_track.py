@@ -10,23 +10,6 @@ url = 'https://api.spotify.com/v1/me/player'
 token = get_token()
 print("getting token...")
 
-FIRST_ROW = ''
-SECOND_ROW = ''
-THIRD_ROW = ''
-FOURTH_ROW = ''
-
-def get_rows():
-    rows = []
-    rows.append(FIRST_ROW)
-    rows.append(SECOND_ROW)
-    rows.append(THIRD_ROW)
-    rows.append(FOURTH_ROW)
-    return rows
-
-def refresh():
-    os.system('python refresh-token.py')
-    return('success')
-
 def main():
     header = {'Authorization': 'Bearer ' + token}
     resp = requests.get(url=url, headers=header)
