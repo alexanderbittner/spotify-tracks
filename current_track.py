@@ -1,15 +1,13 @@
 import requests
 import json
+from authenticate import get_token
 
 url = 'https://api.spotify.com/v1/me/player'
 
 #get a token
-token_url = 'https://accounts.spotify.com/api/token' #expires after an hour!
-token = requests.post(token_url, )
-
+token = get_token()
 
 header = {'Authorization': 'Bearer ' + token}
-
 resp = requests.get(url=url, headers=header)
 data = json.loads(resp.text)
 

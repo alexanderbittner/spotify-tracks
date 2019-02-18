@@ -1,1 +1,3 @@
 auth/
+backups/
+__pycache__/
