@@ -1,19 +1,12 @@
 import json
 import requests
 from urllib.parse import quote
-import time
 
-#  Client ID and Secret files
-client_id_file = 'auth/client-id'
-client_secret_file = 'auth/client-secret'
+#  Client & Token Files
+CLIENT_ID_FILE = 'auth/client-id'
+CLIENT_SECRET_FILE = 'auth/client-secret'
 TOKEN_FILE = 'auth/token'
 REFRESH_FILE = 'auth/refresh-token'
-#  Client Keys
-with open(client_id_file, 'r') as id:
-    CLIENT_ID = id.read()
-
-with open(client_secret_file, 'r') as secret:
-    CLIENT_SECRET = secret.read()
 
 # Spotify URLS
 SPOTIFY_AUTH_URL = "https://accounts.spotify.com/authorize"
@@ -31,14 +24,19 @@ STATE = ""
 SHOW_DIALOG_bool = True
 SHOW_DIALOG_str = str(SHOW_DIALOG_bool).lower()
 
+#  Client Keys
+with open(CLIENT_ID_FILE, 'r') as id:
+    CLIENT_ID = id.read()
+
+with open(CLIENT_SECRET_FILE, 'r') as secret:
+    CLIENT_SECRET = secret.read()
+
 auth_query_parameters = {
     "response_type": "code",
     "redirect_uri": REDIRECT_URI,
     "scope": SCOPE,
     "client_id": CLIENT_ID
 }
-
-
 
 with open(REFRESH_FILE, 'r') as f:
     refresh_token = f.read()
@@ -55,11 +53,7 @@ post_request = requests.post(SPOTIFY_TOKEN_URL, data=code_payload)
 # Auth Step R1: Tokens are Returned to Application
 response_data = json.loads(post_request.text)
 access_token = response_data["access_token"]
-
-print('#########################################################################################')
-print(' NEW TOKEN ')
-print(access_token)
-
+# write token to file
 with open(TOKEN_FILE, 'w') as file:
     file.write(access_token)
 
